@@ -1,0 +1,73 @@
+﻿F---------ilters allow you to achieve code reusability, separation of concerns mainly.
+
+
+
+-----------Code Reusability:
+
+Filters allow you to encapsulate cross-cutting concerns (like logging, validation, or authorization) into reusable components.
+
+This promotes cleaner and more maintainable code by avoiding duplication of logic across multiple controllers.
+
+
+
+-------------------Separation of Concerns:
+
+Filters enable a clear separation of concerns by allowing you to organize different aspects of request processing (e.g., authentication, logging) into distinct filter classes.
+
+This enhances the overall structure and readability of your code.
+
+
+
+
+=> Co the truy cap vao parameter cua Action
+
+access ViewData or bag whaterver
+
+
+
+---------Filter Scrope (pham vi Filter)
+
+- Toan cuc (Global) => ben ngoai luon Entire project => Filter thực thi chung cho hết thẩy các controller và action trong chúng => phải set up ở service
+- Controlelr level => Đặt filter attribute ở class => thực thi chung cho hết thẩy các   action
+- method level => Đặt filter attribute ở Action => thực thi tại action có attribute filter đó
+
+
+
+ ---------------Custom Order of Filter Execution
+
+ - Filters with the lowest order number run first => Trong cùng một order number, filter nào có scope rộng hơn sẽ chạy trước. (Cái thằng global - controller level - method level ấy) => đối với excuting thôi nhé, excuted sẽ ngược lại.
+        
+
+---------CustomOrder => Thay vì dùng ở trong Attribute 
+vd: [TypeFilter(typeof(PersonsListActionFilter),Order = 4)]
+
+thì ta không thể order cho global được, nên khuyến khích dùng interface "IOrderedFilter" nếu filter đó có được dùng toàn cục (global scope) =>   rất dễ :)) implement biến Order là Asp tự làm cho mình luôn
+
+
+=> Lưu ý khi dùng IOrderedFilter thì những level khác trừ global thì vẫn phải dùng attribute order song song với việc đưa giá trị order vào Agruemnt luôn.
+
+vd : [TypeFilter(typeof(ResponeHeaderActionFilter),Arguments = new object[] {"Controller-Scope-Key", "Controller-Scope-Value",3},Order =3)] => Khó chịu vl, nên nhớ rõ đấy => Không dùng 2 thằng song song thì cook
+
+--------------------------Async Filter 
+Theo lẽ thường, nếu Global - Controller - action filter trong cùng một Ordered Number thì thứ tự ưu tiên 
+là G - C - A (viết tắt đấy) => Thế nhưng giữa filter thường với lại async filter thì khi ở "cùng" một Ordered number thì thằng Async sẽ được ưu tiên bất kể nó là G hay C hay A
+
+
+
+
+
+//////////////////////////////////Impact Of Short Circuting => Phạm vi Circuting của từng loại filter thôi ấy mà
+
+
+
+///////Filter Overrides Kiểu => khi ta dùng filter cho controller scope, thế nhưng ở trong action nào đó ta không muốn dùng filter ấy thực thi thì ở trong filter đó, cần phải có thêm điều kiện của custom atribute (Class mà ta tự code attribute ấy)
+
+Ví dụ ta có SkipAll attribute
+
+
+Thì khi ta dùng SkipAll Atribute ở trên action thì tại filter mà ta đã set up điều kiện disable
+
+If(context.Filters.OfType<Attribute muốn check>().Any())
+{
+    return; lúc này Filter sẽ không được thực thi mà sẽ return
+}

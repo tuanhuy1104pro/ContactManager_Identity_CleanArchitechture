@@ -1,0 +1,86 @@
+﻿------------------------------------1 Các bước tạo khởi tạo entity và add service vào project
+
+------- 1 Tạo các model class -> phần nào là primary key thì add atribute [key] -> bình thường là not null, muốn null thì set kiểu nullable syntax trong c# -> Mỗi model class được ví như là một table.
+
+------- 2 Tạo ClassDbcontext
+Cấu trúc "Public class name : DbContext" => kế thừa một class DbContext => Dbcontext hiểu như là một database
+{
+	ở trong dbcontext có các Dbset<Modelclass> name of table {get;set}
+
+	Các Dbset được xem như là một table
+
+	//Nếu muốn configure tên table khi tạo entity thì dùng 
+
+	 protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+
+            modelBuilder.Entity<Country>().ToTable("Countries");
+            modelBuilder.Entity<Person>().ToTable("Persons");
+            //Configure table name thoi
+        }
+}
+
+------3 Khi đã tạo xong Model class và Class dbcontext => add dbcontext thành một service của project để có thể sử dụng
+
+builder.SerVices.AddDbContext<ClassDbCOntext>(option =>
+{
+     //Thiết lập thằng dbcontext này xài database kiểu nào
+
+     option.UseSqlServer(connectionString); // 
+
+}
+});
+
+---- Ngay tại services của Project khi configure xong. sau đó Cần phải tạo constructor tại dbcontext class để nó nhận thông tin từ services rồi chuyển sang base class => Bước này để dùng migration tại bước 6
+
+
+
+
+Học CodeFirst Entity => Thế nhưng bản chất nó chỉ hơn có việc set up Model class và db context class trước còn việc tạo db sau:
+
+Còn DbFirst thì bỏ qua các bước trên và nhiều khi nó sẽ tự tạo dbcontext cho mình để kết nối luôn (Ở trong mvc nó thế, còn lại quay lại edit sau)
+
+
+
+--------4 Tạo database => để trống và add connectionString vào Services => Để test thì tạo localdb cho nhanh khỏi cần vào sqlServer
+
+
+
+-------- 5 add seed data để có một vài dummy data mà test => lúc này chưa tạo được table trong database cho nên seed data chưa có (Nói thẳng ra là chưa xài được);
+
+
+
+--------6 Migration => create or updates database based on the changes made in Model
+
+
+---- Muốn dùng Migration cần phải cài package Entity FrameWork tool tại class library chứa dbcontext : Microsoft.EntityFrameWorkCore.Tools
+
+---- Muốn để thằng tool chạy thì tại start-up project phải có Microsoft.EntityFrameworkCore.Design package
+--1 Add Migration với cú pháp: Add-Migration (InitialDb -> Name of migrarion) tại library có chưa dbcontext
+
+--2 Update-Database -Verbose => thay đổi database dựa trên Migration
+
+Có -verbose nó sẽ hiện các command sql trong console thôi, không muốn thì bỏ nó
+
+
+
+
+-------------Note: sau khi tao database bang migration
+
+=> Khi add-migration thanh cong, no se tao sql command tuong ung voi model entities, sau khi dung update-database thi no moi chinh thuc cap nhat vao database => dung migration moi nhat, ta co the tu minh chinh sua file migration nhu: them procedure, function, trigger v.v, Con viec tao ban hay co thay doi gi ve cot thi luc add-migration thi built-in system da lam gium ta.
+
+Yes, you need to create migration for every change in database.
+
+[
+Tong ket lai. MUon dung sql database thi
+
+BaseProject => Entity sqlserver + entity design
+Entities class librar y => Entity sqlserver + Entity tool  => Code First mới xài tool
+]
+
+
+
+Sơ đồ security
+base project => service business * => repository * => Database
