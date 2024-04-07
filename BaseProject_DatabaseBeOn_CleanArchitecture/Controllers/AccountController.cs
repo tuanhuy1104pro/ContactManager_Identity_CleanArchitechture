@@ -10,9 +10,9 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _usermanager;
-        public AccountController(UserManager<ApplicationUser> usermanager)
+        public AccountController(UserManager<ApplicationUser> userManager)
         {
-            _usermanager = usermanager;
+            _usermanager = userManager;
         }
         [HttpGet]
         public async Task<IActionResult> Register()

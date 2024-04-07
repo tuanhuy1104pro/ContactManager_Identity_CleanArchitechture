@@ -7,7 +7,10 @@ using RepositoryContracts;
 using BaseProject_DatabaseBeOn.Filters;
 using BaseProject_DatabaseBeOn.StartUpExtension;
 using BaseProject_DatabaseBeOn.Middleware;
- 
+using CoreLayer.Domain.IdentityEntities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 namespace BaseProject_DatabaseBeOn
 {
     public class Program
@@ -38,8 +41,12 @@ namespace BaseProject_DatabaseBeOn
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-
-            //StartUp Extention middleware
+            builder.Services.AddIdentity<ApplicationUser, ApplicationRole>() // Add identity Services
+                .AddEntityFrameworkStores<BaseProjectDbContext>() // DBcontext nao Store Data identity
+                .AddDefaultTokenProviders() // for reset password, quen mat khau, validation v.v va , Confirm, otp ...v.v va may may cai nay la can thiet cho security
+                .AddUserStore<UserStore<ApplicationUser, ApplicationRole, BaseProjectDbContext, Guid>>() // Repository about user, cannot used directly with dbcontext
+                .AddRoleStore<RoleStore<ApplicationRole, BaseProjectDbContext, Guid>>(); //same witt cai tren
+                                                                                         //StartUp Extention middleware
 
             //builder.Services.ConfigureServices(builder.Configuration); ////=> Để các service riêng một file khác. => Tạm thời không dùng vì nó sẽ lộn với các note khác :((
 
