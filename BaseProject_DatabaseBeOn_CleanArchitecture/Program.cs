@@ -46,17 +46,20 @@ namespace BaseProject_DatabaseBeOn
                 .AddDefaultTokenProviders() // for reset password, quen mat khau, validation v.v va , Confirm, otp ...v.v va may may cai nay la can thiet cho security
                 .AddUserStore<UserStore<ApplicationUser, ApplicationRole, BaseProjectDbContext, Guid>>() // Repository about user, cannot used directly with dbcontext
                 .AddRoleStore<RoleStore<ApplicationRole, BaseProjectDbContext, Guid>>(); //same witt cai tren
-                                                                                         //StartUp Extention middleware
+
+            //StartUp Extention middleware
 
             //builder.Services.ConfigureServices(builder.Configuration); ////=> Để các service riêng một file khác. => Tạm thời không dùng vì nó sẽ lộn với các note khác :((
 
             //StartUp Extention middleware
 
+            ///////////////////// Seriolog not need
             //builder.Services.AddHttpLogging(option => {
             //    //option.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All; //  lấy all log về http giống usehttploggin();
             //    option.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProtocol;
             //}); Cái này là built-in logging trong Asp => khi muốn dùng Serilog (Một external log package) thì ta phải xóa cái bult-in. Nói chung chỉ nên xài một cái
-
+            ///////////////////// Seriolog not need
+            ///
             var app = builder.Build();
             if (builder.Environment.IsDevelopment())
 
@@ -81,6 +84,7 @@ namespace BaseProject_DatabaseBeOn
 
 
             app.UseStaticFiles();
+            app.UseAuthentication(); // Reading identity cookie, xem có đăng nhaahjp  hay chưa
             app.UseRouting();
             app.MapControllers();
             app.Run();

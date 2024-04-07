@@ -10,9 +10,11 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _usermanager;
-        public AccountController(UserManager<ApplicationUser> userManager)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _usermanager = userManager;
+            _signInManager = signInManager;
         }
         [HttpGet]
         public async Task<IActionResult> Register()
@@ -31,9 +33,17 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
             ApplicationUser user = new ApplicationUser() {Email = registerDTO.Email,PhoneNumber = registerDTO.Phone,UserName = registerDTO.Email,PersonName = registerDTO.PersonName };
             IdentityResult result =  await _usermanager.CreateAsync(user,registerDTO.Password);
             //IdentityResult contain status of identity
-            
+
+           
             if(result.Succeeded)
             {
+                /////THường đăng ký xong sẽ đăng nhập luôn => lí do đấy, lúc này sv sẽ đưa cho client cookie chứa thông tin đăng nhập user ---------Login
+                ///
+                await _signInManager.SignInAsync(user, isPersistent: false); // lúc này sẽ cấp cookie
+
+                //Login
+
+                // redirect view
                 return RedirectToAction(nameof(PersonsController.Index), "Persons");
             }
             else
