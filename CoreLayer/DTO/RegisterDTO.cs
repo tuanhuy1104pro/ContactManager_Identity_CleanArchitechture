@@ -10,7 +10,7 @@ namespace CoreLayer.DTO
     public class RegisterDTO
     {
         //Note về view. => Khi dùng model của class nào thì khi ta sử dụng thuộc tính asp-for => nếu model đó không có propterty đó thì sẽ lỗi, nghĩa là property trong asp-for phải giống với những property trong class
-        [Required(ErrorMessage = "Name can't be blank")]
+        [Required(ErrorMessage = "Ten khong duoc de trong")]
         public string PersonName { get; set; }
 
 

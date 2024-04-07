@@ -2,6 +2,7 @@
 using BaseProjectServices;
 using CoreLayer.Domain.IdentityEntities;
 using Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
@@ -27,9 +28,12 @@ namespace BaseProject_DatabaseBeOn.StartUpExtension
             services.AddScoped<IPersonsRepository, PersonsRepository>();
 
             ////------------------Enable Identity in this project
-            services.AddIdentity<ApplicationUser, ApplicationRole>().AddEntityFrameworkStores<BaseProjectDbContext>().AddUserStore<UserStore<ApplicationUser, ApplicationRole, BaseProjectDbContext, Guid>>()
-                .AddRoleStore<RoleStore<ApplicationRole,BaseProjectDbContext,Guid>>();
-                
+            services.AddIdentity<ApplicationUser, ApplicationRole>() // Add identity Services
+                .AddEntityFrameworkStores<BaseProjectDbContext>() // DBcontext nao Store Data identity
+                .AddDefaultTokenProviders() // for reset password, quen mat khau, validation v.v va , Confirm, otp ...v.v va may may cai nay la can thiet cho security
+                .AddUserStore<UserStore<ApplicationUser, ApplicationRole, BaseProjectDbContext, Guid>>() // Repository aboit user, cannot used directly with dbcontext
+                .AddRoleStore<RoleStore<ApplicationRole,BaseProjectDbContext,Guid>>(); //same witt cai tren
+                //Nôm na phải add đủ các cấu trúc để nó chạy ổn định
                  
             //Store identity tại Dbcontext là BaseProjectDbContext
 
