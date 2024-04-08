@@ -11,6 +11,7 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
     {
         private readonly UserManager<ApplicationUser> _usermanager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _usermanager = userManager;
@@ -57,6 +58,18 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
             // Store usser registration details into Identity database
 
            
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Login()
+        {
+            return View();
+        }    
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index","Persons");
         }
     }
 }

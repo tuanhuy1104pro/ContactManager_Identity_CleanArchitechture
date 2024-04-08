@@ -28,18 +28,34 @@
 
                             <ul>
                                 <li>
-                                    @if(User.Identity.IsAuthenticated)
+                                    @if(User.Identity.IsAuthenticated) //If user login then true, not is false
                                     {
                                         @User.Identity.Name
+                                        <a asp-controller="Account" asp-action="Logout">Logout</a>
+                                    }
+                                    else
+                                    {
+                                        @if(ViewBag.CurrentUrl == "/Account/Register")
+                                        {
+                                            <a asp-controller="Account" asp-action="Register" class="nav-active">Register</a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Account" asp-action="Register" >Register</a>
+                                        }
+
+                                        @if (ViewBag.CurrentUrl == "/Account/Login")
+                                        {
+                                            <a asp-controller="Account" asp-action="Login" class="nav-active">Login</a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Account" asp-action="Login">Login</a>
+                                        }
                                     }
                                 </li>
-                                <li>
-                                    <a asp-controller="Account" asp-action="Register">Register</a>
-                                    <a asp-controller="Account" asp-action="Login">Login</a>
-                                </li>
-                                <li>
-
-                                </li>
+                                
+                               
                             </ul>
                         </div>
 
@@ -53,8 +69,24 @@
 
                 <ul>
                     <li>
-                        <a asp-controller="Persons" asp-action="Index">Persons</a>
-                        <a asp-controller="Countries" asp-action="UploadFromExcel">Upload Countries</a>
+                        @if (ViewBag.CurrentUrl == "/Persons/Index")
+                        {
+                            <a asp-controller="Persons" asp-action="Index" class="nav-active">Persons</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Persons" asp-action="Index">Persons</a>
+                        }
+                        @if (ViewBag.CurrentUrl == "/Countries/UploadFromExcel")
+                        {
+                            <a asp-controller="Countries" asp-action="UploadFromExcel" class="nav-active">Upload Countries</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Countries" asp-action="UploadFromExcel">Upload Countries</a>
+                          
+                        }
+                        
                     </li>
                 </ul>
             </div>

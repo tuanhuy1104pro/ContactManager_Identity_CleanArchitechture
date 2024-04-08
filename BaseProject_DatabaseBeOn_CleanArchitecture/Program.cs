@@ -41,7 +41,14 @@ namespace BaseProject_DatabaseBeOn
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-            builder.Services.AddIdentity<ApplicationUser, ApplicationRole>() // Add identity Services
+            builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(option =>
+            {
+                ////// Khúc này là để config một số thứ như password liên quan đến validation trước khi lưu vào database identity
+                ///
+                option.Password.RequireUppercase = false;
+                option.Password.RequireNonAlphanumeric = false;
+                option.Password.RequiredLength = 5;
+            }) // Add identity Services
                 .AddEntityFrameworkStores<BaseProjectDbContext>() // DBcontext nao Store Data identity
                 .AddDefaultTokenProviders() // for reset password, quen mat khau, validation v.v va , Confirm, otp ...v.v va may may cai nay la can thiet cho security
                 .AddUserStore<UserStore<ApplicationUser, ApplicationRole, BaseProjectDbContext, Guid>>() // Repository about user, cannot used directly with dbcontext
