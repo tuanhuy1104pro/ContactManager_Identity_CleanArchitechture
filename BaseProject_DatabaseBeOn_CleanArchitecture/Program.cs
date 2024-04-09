@@ -58,7 +58,22 @@ namespace BaseProject_DatabaseBeOn
 
             builder.Services.AddAuthorization(option =>
             {
+                ///Custom policies
                 option.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build(); // Enforeces authorization policy (user must be authenticated) for all action => Khi ta muốn action nào không cần phải đăng nhập mà người dùng vẫn có thể truy cập được thì dùng [AllowAnonymous] attribute ở controller hay action
+
+                option.AddPolicy("NotAuthenticated", policy =>
+                {
+                    //policy.RequireRole("Admin");//Thằng này người ta đã build sẵn rồi
+                    policy.RequireAssertion(context =>
+                    {
+                        //Thằng này là custom require này
+                        
+                        return !context.User.Identity.IsAuthenticated; //True là cho access, false thì đéo
+
+
+                        ///Muốn test thằng custom này thì tăt [AllowAnonymous] attribute tại AccountController vì lỡ cho phép toàn cục anonymous rồi
+                    });
+                });
             });
             //builder.Services.AddAuthorization(); // bản chất của thằng này là add services với mục đích config Authorization mà thôi, nếu dùng mặc định thì không cần, TH muốn config như thằng ở trên thì dùng
             builder.Services.ConfigureApplicationCookie(option =>
@@ -92,7 +107,9 @@ namespace BaseProject_DatabaseBeOn
                 app.UseExceptionHandler("/Error"); // Chạy trước để catch thằng ở dưới
                 app.UseExceptionHandlingMiddleware(); // Thằng này sẽ catch excep từ Action trước, do nó gần các middleware kế tiếp hơn
             }
-
+            //use https
+            app.UseHsts();
+            app.UseHttpsRedirection(); // use https
             app.Logger.LogDebug("Yoyoyo debug"); // thang nay khong hien do default cua asp chi hien tu info cho toi Critical => Muon hien thi phai vao appsettings.json de tu config loglevel => Nho phai check appsetting.Enviroment.json luon neh
             
             //Log trong appsetting co hai dang. Default => La cho nguoi dung tu dinh nghia giong nhu o duoi - Microsoft.AspNetCore => cho cac thu vien da duoc tao san cua asp

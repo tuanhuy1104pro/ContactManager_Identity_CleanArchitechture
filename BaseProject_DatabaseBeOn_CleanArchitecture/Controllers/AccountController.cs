@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
 {   
     [Route("[Controller]/[Action]")]
-    [AllowAnonymous]
+    [AllowAnonymous] // một số trường hợp thằng này khá là báo vì cho truy cập hết
     public class AccountController : Controller
     {
        
@@ -23,12 +23,14 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
             _rolemanager = rolemanager;
         }
         [HttpGet]
+        [Authorize("NotAuthenticated")] //Custom policy tạo ở program
         public async Task<IActionResult> Register()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize("NotAuthenticated")]
         public async Task<IActionResult> Register(RegisterDTO registerDTO)
         {
             if(ModelState.IsValid == false)
@@ -97,11 +99,13 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
         }
 
         [HttpGet]
+        [Authorize("NotAuthenticated")]
         public async Task<IActionResult> Login()
         {
             return View();
         }
         [HttpPost]
+        [Authorize("NotAuthenticated")]
         public async Task<IActionResult> Login(LoginDTO login,string? ReturnUrl)
         {
 
@@ -134,7 +138,7 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
                 return View(login);
             }
         }
-
+        [Authorize] // Kiểu này thì là bất kể role nào miễn là đăng nhập đều xài được trái ngược với AllowAnonymous
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
