@@ -10,6 +10,7 @@ using BaseProject_DatabaseBeOn.Middleware;
 using CoreLayer.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BaseProject_DatabaseBeOn
 {
@@ -54,11 +55,23 @@ namespace BaseProject_DatabaseBeOn
                 .AddUserStore<UserStore<ApplicationUser, ApplicationRole, BaseProjectDbContext, Guid>>() // Repository about user, cannot used directly with dbcontext
                 .AddRoleStore<RoleStore<ApplicationRole, BaseProjectDbContext, Guid>>(); //same witt cai tren
 
+            builder.Services.AddAuthorization(option =>
+            {
+                option.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build(); // Enforeces authorization policy (user must be authenticated) for all action => Khi ta muốn action nào không cần phải đăng nhập mà người dùng vẫn có thể truy cập được thì dùng [AllowAnonymous] attribute ở controller hay action
+            });
+            //builder.Services.AddAuthorization(); // bản chất của thằng này là add services với mục đích config Authorization mà thôi, nếu dùng mặc định thì không cần, TH muốn config như thằng ở trên thì dùng
+            builder.Services.ConfigureApplicationCookie(option =>
+            {
+                option.LoginPath = "/Account/Login"; // Kiểu khi người dùng muốn truy cập vào trang nào mà nó yêu cầu phải đăng nhập mà người dùng chưa đăng nhập thì sẽ tự động chuyển về domain trên để đăng nhập
+            });
+
+
             //StartUp Extention middleware
 
             //builder.Services.ConfigureServices(builder.Configuration); ////=> Để các service riêng một file khác. => Tạm thời không dùng vì nó sẽ lộn với các note khác :((
 
             //StartUp Extention middleware
+
 
             ///////////////////// Seriolog not need
             //builder.Services.AddHttpLogging(option => {
@@ -91,8 +104,9 @@ namespace BaseProject_DatabaseBeOn
 
 
             app.UseStaticFiles();
-            app.UseAuthentication(); // Reading identity cookie, xem có đăng nhaahjp  hay chưa
             app.UseRouting();
+            app.UseAuthentication(); // Reading identity cookie, xem có đăng nhaahjp  hay chưa
+            app.UseAuthorization(); // Config page cho( controller action ) nào sẽ được cho phép truy cập khi đã login hay không ------------- Validates access permissions of the user => B2: add authorrization service
             app.MapControllers();
             app.Run();
         }

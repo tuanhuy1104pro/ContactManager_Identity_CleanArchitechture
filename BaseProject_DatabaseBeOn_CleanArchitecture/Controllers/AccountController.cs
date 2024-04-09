@@ -1,12 +1,14 @@
 ﻿using BaseProject_DatabaseBeOn.Controllers;
 using CoreLayer.Domain.IdentityEntities;
 using CoreLayer.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
 {   
     [Route("[Controller]/[Action]")]
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _usermanager;
@@ -64,12 +66,52 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
         public async Task<IActionResult> Login()
         {
             return View();
-        }    
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginDTO login,string? ReturnUrl)
+        {
+
+            if (ModelState.IsValid == false)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage);
+                return View(login);
+            }
+           var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, isPersistent: false,lockoutOnFailure:false); //lockoutOnFailure true nếu người dùng nhập sai nhiều quá nó sẽ lock
+
+            if(result.Succeeded )
+            {
+                if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+                    return LocalRedirect(ReturnUrl);
+                else
+                return RedirectToAction("Index", "Persons");
+            }
+            else
+            {
+                ModelState.AddModelError("Login","Invalid email or password");
+                return View(login);
+            }
+        }
 
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index","Persons");
+        }
+        public async Task<IActionResult> isEmailAlreadyHave(string email)
+        {
+            ApplicationUser user = await _usermanager.FindByEmailAsync(email);
+            if(user == null)
+            {
+                return Json(true); //valid -> mean email already have
+            }
+            else
+            {
+                return Json(false);////invalid
+            }
+
+
+            /////// Cai nay dung Remote Validation nhung, tam thoi chua tim duoc package tuong ung =
+            /// => dùng cách khác cho lành ý tưởng => viết services => apply vào controller, nếu có lỗi thì quăng ra viewbag, khỏi cần xử lý ở build-in chi cho nặng
         }
     }
 }

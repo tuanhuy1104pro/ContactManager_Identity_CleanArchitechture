@@ -8,6 +8,7 @@ using BaseProject_DatabaseBeOn.Filters.ResultFilters;
 using BaseProject_DatabaseBeOn.Filters.ResourceFilters;
 
 using BaseProject_DatabaseBeOn.Filters.AttributeAboutFitler;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BaseProject_DatabaseBeOn.Controllers
 {
@@ -38,6 +39,8 @@ namespace BaseProject_DatabaseBeOn.Controllers
         [TypeFilter(typeof(PersonsListResultFilter))]
 
         [SkipFilter]
+        
+        //[Authorize] //Trai nguoc voi allowAnonymous
         public async Task<IActionResult> Index(string searchBy, string? searchString, string sortBy = nameof(PersonResponse.PersonName), SortOrderOptions sortOrder = SortOrderOptions.ASC)
         {
             _logger.LogInformation("Index action method of personsControlelr");
