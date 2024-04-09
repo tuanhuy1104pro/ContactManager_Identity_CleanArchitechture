@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CoreLayer.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace CoreLayer.DTO
         [Required(ErrorMessage = "Confirm Password can't be blank")]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
+
+        public UserTypeOptions UserType { get; set; } = UserTypeOptions.User;
 
     }
 }

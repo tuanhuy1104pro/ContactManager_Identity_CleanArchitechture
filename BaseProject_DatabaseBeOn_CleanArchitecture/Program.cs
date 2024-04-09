@@ -11,6 +11,7 @@ using CoreLayer.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 
 namespace BaseProject_DatabaseBeOn
 {
@@ -108,6 +109,14 @@ namespace BaseProject_DatabaseBeOn
             app.UseAuthentication(); // Reading identity cookie, xem có đăng nhaahjp  hay chưa
             app.UseAuthorization(); // Config page cho( controller action ) nào sẽ được cho phép truy cập khi đã login hay không ------------- Validates access permissions of the user => B2: add authorrization service
             app.MapControllers();
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name:"default",
+            //        pattern: "{controller}/{action}"
+            //        );
+            //}); //Convention Routing => kiểu giống như trong mvc cũ ấy, mặc định một template route cho hầu hết controller => Enterprise dùng attribute PS::: Nếu dùng Convention routing mà còn dùng Attribute routing thì thằng Attribute sẽ override thằng Convention
             app.Run();
         }
     }

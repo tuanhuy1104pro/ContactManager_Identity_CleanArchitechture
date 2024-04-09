@@ -181,5 +181,8 @@ namespace BaseProject_DatabaseBeOn.Controllers
             _personsService.DeletePerson(personUpdateResult.PersonID);
             return RedirectToAction("Index");
         }
+
+        
+     
     }
 }
