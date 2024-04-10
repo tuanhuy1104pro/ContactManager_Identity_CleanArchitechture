@@ -1,2 +1,10 @@
-﻿
+﻿@model ApplicationUser
 <h1>About</h1>
+
+<p>Name: @Model.PersonName</p>
+<p>Email: @Model.Email</p>
+<p>Role: </p>
+@foreach (var item in ViewBag.Role)
+{
+    @item;
+}

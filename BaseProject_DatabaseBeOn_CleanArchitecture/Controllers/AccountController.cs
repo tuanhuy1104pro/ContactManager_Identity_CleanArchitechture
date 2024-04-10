@@ -5,6 +5,7 @@ using CoreLayer.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
 {   
@@ -31,6 +32,7 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
 
         [HttpPost]
         [Authorize("NotAuthenticated")]
+        [ValidateAntiForgeryToken] // Điều kiện ở form phải dùng tag helper hết mới xài được => Only for Post action nhá
         public async Task<IActionResult> Register(RegisterDTO registerDTO)
         {
             if(ModelState.IsValid == false)
@@ -163,9 +165,19 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
 
         public  async Task<IActionResult> About()
         {
-            //Nghiên cứu sau:
-           
-            return View();
-        }    
+
+            var user =  _usermanager.GetUserAsync(User).Result;
+            IList<String> role = await _usermanager.GetRolesAsync(user); // Một ví dụ về Cast, thằng GetRolesAsync trả về kiểu task<ilist<string>> tức là phải dùng await xong thì nó mới trả về ilist<string>. Task ở dây hiểu là phải chờ nó thực hiện xong thì mới return giá trị tương ứng. Không có await được hiểu sẽ trả về task<ilist<string>> (bởi nhiều khi nó chưa hoạt động xong mà đã gán cho user rồi)
+            ViewBag.Role = (IEnumerable<string>) role;
+
+            return View( await GetCurrentUser());
+        }
+        public async Task<ApplicationUser> GetCurrentUser()
+        {
+            //ClaimsPrincipal currentUser = User; test
+            var user =  _usermanager.GetUserAsync(User).Result;
+            
+            return  user;
+        }
     }
 }

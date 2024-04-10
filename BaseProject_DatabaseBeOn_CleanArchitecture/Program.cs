@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BaseProject_DatabaseBeOn
 {
@@ -33,6 +34,8 @@ namespace BaseProject_DatabaseBeOn
                 var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<ResponeHeaderActionFilter>>(); // Lấy service instance
                 option.Filters.Add(new ResponeHeaderActionFilter(logger, "Entire-Key", "Entire-Value",2)); // add by Instance
                 //
+
+                option.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); // Resource filter global của thằng ValidateAntiforgeryTokenAttribute => từ giờ nó sẽ tự add không cần phải thủ công add từng attribute làm gì cho cực => ĐIển hình nhất là tại Login action không có add attribute nhưng vẫn có XSRF - Cross Site Request Forgery - CSRF
             });
             builder.Services.AddScoped<ICountriesService, CountriesService>();
             builder.Services.AddScoped<IPersonsService, PersonsService>();

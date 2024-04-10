@@ -73,6 +73,7 @@ namespace BaseProject_DatabaseBeOn.Controllers
         [Route("[action]")]
         [HttpGet]
         [TypeFilter(typeof(LearnAsyncFilter), Arguments = new object[] { "M-Custom-Key-Create", "Custom-Value-Create",2},Order =2)] // Co the resusable => cu the la su dung hco nhieu action hoac 1 action co the dung nhieu filter
+        [Authorize(Roles ="Admin")] //////////// Không nhất thiết phải dùng Area, dùng thằng này đã có thể đặt điều kiện role nào có thể nào access rồi, area chỉ là giúp cho ta phân chia dễ hơn thôi
         public async Task<IActionResult> Create()
         {
             List<CountryResponse> countries = await _countriesService.GetAllCountries();
