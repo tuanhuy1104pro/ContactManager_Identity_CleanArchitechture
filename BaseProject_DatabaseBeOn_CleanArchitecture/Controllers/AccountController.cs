@@ -35,6 +35,7 @@ namespace BaseProject_DatabaseBeOn_CleanArchitecture.Controllers
         [ValidateAntiForgeryToken] // Điều kiện ở form phải dùng tag helper hết mới xài được => Only for Post action nhá
         public async Task<IActionResult> Register(RegisterDTO registerDTO)
         {
+            
             if(ModelState.IsValid == false)
             {
                 ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage);
