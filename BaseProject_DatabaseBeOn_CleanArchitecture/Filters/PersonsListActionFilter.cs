@@ -51,7 +51,7 @@ namespace BaseProject_DatabaseBeOn.Filters
                     personsController.ViewData["CurrentSortBy"] = Convert.ToString(parameters["sortBy"]);
                 }
             }
-
+            
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
