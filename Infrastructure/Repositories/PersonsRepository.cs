@@ -28,6 +28,7 @@ namespace Repositories
 
         public async Task<bool> DeletePersonByPersonID(Guid personID)
         {
+           
             _db.Persons.RemoveRange(_db.Persons.Where(temp => temp.PersonID == personID));
             int rowsDeleted = await _db.SaveChangesAsync();
 

@@ -232,6 +232,7 @@ namespace BaseProjectServices
             matchingPerson.CountryID = personUpdateRequest.CountryID;
             matchingPerson.Address = personUpdateRequest.Address;
             matchingPerson.ReceiveNewsLetters = personUpdateRequest.ReceiveNewsLetters;
+            
 
             //await _db.SaveChangesAsync(); //update 
             //Repository thay thế cho cái update trên
